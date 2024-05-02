@@ -11,6 +11,11 @@ export interface CapacitorHealthkitPlugin {
    */
   queryHKitSampleType<T>(queryOptions:SingleQueryOptions): Promise<QueryOutput<T>>;
   /**
+   * This defines a query for sources of the Healthkit for a single type of data.
+   * @param queryOptions defines the type of data.
+   */
+  querySourcesForSampleType(queryOptions:SingleQuerySampleName):  Promise<QueryOutput<SourceQueryResult>>;
+  /**
    * This functions resolves if HealthKitData is available it uses the native HKHealthStore.isHealthDataAvailable() funtion of the HealthKit .
    */
   isAvailable(): Promise<void>;
@@ -23,7 +28,7 @@ export interface CapacitorHealthkitPlugin {
    * Checks if there is writing permission for one specific sample type. This function has not been tested.
    * @param queryOptions defines the sampletype for which you need to check for writing permission.
    */
-  isEditionAuthorized(queryOptions: EditionQuery): Promise<void>;
+  isEditionAuthorized(queryOptions: SingleQuerySampleName): Promise<void>;
   /**
    * Checks if there is writing permission for multiple sample types. This function has not been tested - and usually needs a parameter to be able to answer.
    */
@@ -33,9 +38,15 @@ export interface CapacitorHealthkitPlugin {
 /**
  * This interface is used for any results coming from HealthKit. It always has a count and the actual results.
  */
-export interface QueryOutput<T = SleepData | ActivityData | OtherData> {
+export interface QueryOutput<T = SleepData | ActivityData | OtherData| SourceQueryResult> {
   countReturn: number;
   resultData: T[];
+}
+
+export interface SourceQueryResult {
+  sampleName: string;
+  source: string;
+  sourceBundleId: string;
 }
 
 export interface DeviceInformation {
@@ -96,12 +107,13 @@ export interface BaseQueryOptions {
   limit: number;
 }
 
+export interface SingleQuerySampleName {
+  sampleName: string;
+}
 /**
  * This extends the Basequeryoptions for a single sample type.
  */
-export interface SingleQueryOptions extends BaseQueryOptions {
-  sampleName: string;
-}
+export interface SingleQueryOptions extends BaseQueryOptions, SingleQuerySampleName {}
 
 /**
  * This extends the Basequeryoptions for a multiple sample types.
@@ -118,14 +130,6 @@ export interface AuthorizationQueryOptions {
   read: string[];
   write: string[];
   all: string[];
-}
-
-
-/**
- * This is used for checking writing permissions.
- */
-export interface EditionQuery {
-  sampleName: string;
 }
 
 /**
