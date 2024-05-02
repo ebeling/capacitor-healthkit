@@ -9,12 +9,16 @@ export interface CapacitorHealthkitPlugin {
    * This defines a query to the Healthkit for a single type of data.
    * @param queryOptions defines the type of data and the timeframe which shall be queried, a limit can be set to reduce the number of results.
    */
-  queryHKitSampleType<T>(queryOptions:SingleQueryOptions): Promise<QueryOutput<T>>;
+  queryHKitSampleType<T>(
+    queryOptions: SingleQueryOptions,
+  ): Promise<QueryOutput<T>>;
   /**
    * This defines a query for sources of the Healthkit for a single type of data.
    * @param queryOptions defines the type of data.
    */
-  querySourcesForSampleType(queryOptions:SingleQuerySampleName):  Promise<QueryOutput<SourceQueryResult>>;
+  querySourcesForSampleType(
+    queryOptions: SingleQuerySampleName,
+  ): Promise<QueryOutput<SourceQueryResult>>;
   /**
    * This functions resolves if HealthKitData is available it uses the native HKHealthStore.isHealthDataAvailable() funtion of the HealthKit .
    */
@@ -23,7 +27,7 @@ export interface CapacitorHealthkitPlugin {
    * This defines a query to the Healthkit for a single type of data. This function has not been tested.
    * @param queryOptions defines the sample types which can be queried for
    */
-  multipleQueryHKitSampleType(queryOptions:MultipleQueryOptions): Promise<any>;
+  multipleQueryHKitSampleType(queryOptions: MultipleQueryOptions): Promise<any>;
   /**
    * Checks if there is writing permission for one specific sample type. This function has not been tested.
    * @param queryOptions defines the sampletype for which you need to check for writing permission.
@@ -38,7 +42,9 @@ export interface CapacitorHealthkitPlugin {
 /**
  * This interface is used for any results coming from HealthKit. It always has a count and the actual results.
  */
-export interface QueryOutput<T = SleepData | ActivityData | OtherData| SourceQueryResult> {
+export interface QueryOutput<
+  T = SleepData | ActivityData | OtherData | SourceQueryResult
+> {
   countReturn: number;
   resultData: T[];
 }
@@ -73,7 +79,7 @@ export interface BaseData {
 /**
  * These data points are specific for sleep data.
  */
-export interface SleepData extends BaseData  {
+export interface SleepData extends BaseData {
   sleepState: string;
   timeZone: string;
 }
@@ -113,7 +119,9 @@ export interface SingleQuerySampleName {
 /**
  * This extends the Basequeryoptions for a single sample type.
  */
-export interface SingleQueryOptions extends BaseQueryOptions, SingleQuerySampleName {}
+export interface SingleQueryOptions
+  extends BaseQueryOptions,
+    SingleQuerySampleName {}
 
 /**
  * This extends the Basequeryoptions for a multiple sample types.
@@ -121,7 +129,6 @@ export interface SingleQueryOptions extends BaseQueryOptions, SingleQuerySampleN
 export interface MultipleQueryOptions extends BaseQueryOptions {
   sampleNames: string[];
 }
-
 
 /**
  * Used for authorization of reading and writing access.
