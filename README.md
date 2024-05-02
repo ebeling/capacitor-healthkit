@@ -103,6 +103,7 @@ And you're all set ! :+1:
 
 * [`requestAuthorization(...)`](#requestauthorization)
 * [`queryHKitSampleType(...)`](#queryhkitsampletype)
+* [`querySourcesForSampleType(...)`](#querysourcesforsampletype)
 * [`isAvailable()`](#isavailable)
 * [`multipleQueryHKitSampleType(...)`](#multiplequeryhkitsampletype)
 * [`isEditionAuthorized(...)`](#iseditionauthorized)
@@ -146,6 +147,23 @@ This defines a query to the Healthkit for a single type of data.
 --------------------
 
 
+### querySourcesForSampleType(...)
+
+```typescript
+querySourcesForSampleType(queryOptions: SingleQuerySampleName) => Promise<QueryOutput<SourceQueryResult>>
+```
+
+This defines a query for sources of the Healthkit for a single type of data.
+
+| Param              | Type                                                                    | Description               |
+| ------------------ | ----------------------------------------------------------------------- | ------------------------- |
+| **`queryOptions`** | <code><a href="#singlequerysamplename">SingleQuerySampleName</a></code> | defines the type of data. |
+
+**Returns:** <code>Promise&lt;<a href="#queryoutput">QueryOutput</a>&lt;<a href="#sourcequeryresult">SourceQueryResult</a>&gt;&gt;</code>
+
+--------------------
+
+
 ### isAvailable()
 
 ```typescript
@@ -177,14 +195,14 @@ This defines a query to the Healthkit for a single type of data. This function h
 ### isEditionAuthorized(...)
 
 ```typescript
-isEditionAuthorized(queryOptions: EditionQuery) => Promise<void>
+isEditionAuthorized(queryOptions: SingleQuerySampleName) => Promise<void>
 ```
 
 Checks if there is writing permission for one specific sample type. This function has not been tested.
 
-| Param              | Type                                                  | Description                                                                |
-| ------------------ | ----------------------------------------------------- | -------------------------------------------------------------------------- |
-| **`queryOptions`** | <code><a href="#editionquery">EditionQuery</a></code> | defines the sampletype for which you need to check for writing permission. |
+| Param              | Type                                                                    | Description                                                                |
+| ------------------ | ----------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| **`queryOptions`** | <code><a href="#singlequerysamplename">SingleQuerySampleName</a></code> | defines the sampletype for which you need to check for writing permission. |
 
 --------------------
 
@@ -228,6 +246,18 @@ This interface is used for any results coming from HealthKit. It always has a co
 
 This extends the Basequeryoptions for a single sample type.
 
+
+#### SourceQueryResult
+
+| Prop                 | Type                |
+| -------------------- | ------------------- |
+| **`sampleName`**     | <code>string</code> |
+| **`source`**         | <code>string</code> |
+| **`sourceBundleId`** | <code>string</code> |
+
+
+#### SingleQuerySampleName
+
 | Prop             | Type                |
 | ---------------- | ------------------- |
 | **`sampleName`** | <code>string</code> |
@@ -240,15 +270,6 @@ This extends the Basequeryoptions for a multiple sample types.
 | Prop              | Type                  |
 | ----------------- | --------------------- |
 | **`sampleNames`** | <code>string[]</code> |
-
-
-#### EditionQuery
-
-This is used for checking writing permissions.
-
-| Prop             | Type                |
-| ---------------- | ------------------- |
-| **`sampleName`** | <code>string</code> |
 
 </docgen-api>
 
