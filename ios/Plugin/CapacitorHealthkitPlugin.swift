@@ -92,8 +92,9 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
             case "duration":
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.appleExerciseTime)!)
             case "activity":
-                types.insert(HKObjectType.categoryType(forIdentifier: HKCategoryTypeIdentifier.sleepAnalysis)!)
                 types.insert(HKWorkoutType.workoutType())
+            case "sleep":
+                types.insert(HKObjectType.categoryType(forIdentifier: HKCategoryTypeIdentifier.sleepAnalysis)!)                
             case "calories":
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.activeEnergyBurned)!)
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.basalEnergyBurned)!)
@@ -320,7 +321,28 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                 let sleepED = sample.endDate as NSDate
                 let sleepInterval = sleepED.timeIntervalSince(sleepSD as Date)
                 let sleepHoursBetweenDates = sleepInterval / 3600
-                let sleepState = (sample.value == HKCategoryValueSleepAnalysis.inBed.rawValue) ? "InBed" : "Asleep"
+                var sleepState: String;
+                if #available(iOS 16.0, *) {
+                    switch sample.value {
+                    case HKCategoryValueSleepAnalysis.inBed.rawValue:
+                        sleepState = "inBed"
+                    case HKCategoryValueSleepAnalysis.asleepCore.rawValue:
+                        sleepState = "asleepCore"
+                    case HKCategoryValueSleepAnalysis.asleepDeep.rawValue:
+                        sleepState = "asleepDeep"
+                    case HKCategoryValueSleepAnalysis.asleepREM.rawValue:
+                        sleepState = "asleepREM"
+                    case HKCategoryValueSleepAnalysis.asleepUnspecified.rawValue:
+                        sleepState = "asleepUnspecified"
+                    case HKCategoryValueSleepAnalysis.awake.rawValue:
+                        sleepState = "awake"
+                    default: sleepState = ""
+                        
+                    }
+                } else {
+                    // Fallback on earlier versions
+                    sleepState = (sample.value == HKCategoryValueSleepAnalysis.inBed.rawValue) ? "InBed" : "Asleep"
+                }
                 let constructedSample: [String: Any] = [
                     "uuid": sample.uuid.uuidString,
                     "timeZone": getTimeZoneString(sample: sample) as String,
@@ -562,6 +584,37 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                 "countReturn": output.count,
                 "resultData": output,
             ])
+        }
+        healthStore.execute(query)
+    }
+    
+    @objc func querySourcesForSampleType(_ call: CAPPluginCall) {
+        guard let _sampleName = call.options["sampleName"] as? String else {
+            return call.reject("Must provide sampleName")
+        }
+        guard let sampleType: HKSampleType = getSampleType(sampleName: _sampleName) else {
+            return call.reject("Error in sample name")
+        }
+        let query = HKSourceQuery(sampleType: sampleType, samplePredicate: nil) { (query, sourcesOrNil, errorOrNil) in
+            
+            guard let sources = sourcesOrNil else {
+                // Properly handle the error.
+                return call.reject("Error happened while query sources")
+            }
+            var output: [[String: Any]] = []
+            for source in sources {
+                // Process sources here.
+                output.append([
+                "sampleName": _sampleName,
+                "source": source.name,
+                "sourceBundleId": source.bundleIdentifier,
+                ])
+            }
+            call.resolve([
+                "countReturn": output.count,
+                "resultData": output,
+            ])
+            
         }
         healthStore.execute(query)
     }
