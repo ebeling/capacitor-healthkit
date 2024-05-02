@@ -21,7 +21,9 @@ export class CapacitorHealthkitWeb
   async queryHKitSampleType(_queryOptions: SingleQueryOptions): Promise<any> {
     throw this.unimplemented('Not implemented on web.');
   }
-  async querySourcesForSampleType(_queryOptions: SingleQuerySampleName): Promise<any> {
+  async querySourcesForSampleType(
+    _queryOptions: SingleQuerySampleName,
+  ): Promise<any> {
     throw this.unimplemented('Not implemented on web.');
   }
   async isAvailable(): Promise<void> {
@@ -34,7 +36,9 @@ export class CapacitorHealthkitWeb
     throw this.unimplemented('Not implemented on web.');
   }
 
-  async isEditionAuthorized(_queryOptions: SingleQuerySampleName): Promise<void> {
+  async isEditionAuthorized(
+    _queryOptions: SingleQuerySampleName,
+  ): Promise<void> {
     throw this.unimplemented('Not implemented on web.');
   }
 
