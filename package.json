@@ -9,7 +9,7 @@
   "files": [
     "dist/",
     "ios/Plugin/",
-    "PerfoodCapacitorHealthkit.podspec"
+    "GpunktCapacitorHealthkit.podspec"
   ],
   "author": "Perfood GmbH & Kirstin Ebeling",
   "license": "MIT",
